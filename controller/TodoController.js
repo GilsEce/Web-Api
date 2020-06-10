@@ -125,7 +125,7 @@ const deleteTodo = (req, res) => {
 const deleteAllTodos = (req, res) => {
   errorReq.init();
 
-  let confirmPass = "AFCT-1H1-2HH-12-DFGQ";
+  let confirmPass = "AFCT-1H1-2HH-12-DFGQ"; //static password, but you can create a dynamic pass that store in db
 
   if (req.query.pass === confirmPass) {
     db.Todo.destroy({
