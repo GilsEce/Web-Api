@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       last_name: DataTypes.STRING,
+      age: DataTypes.INTEGER,
       email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -25,14 +26,14 @@ module.exports = (sequelize, DataTypes) => {
 
     {
       defaultScope: {
-      //  attributes: { exclude: ["email"] },  // hidding some field
+        //  attributes: { exclude: ["email"] },  // hidding some field
       },
     }
   );
 
   User.associate = function (models) {
     // associations can be defined here
-    User.hasMany(models.Todo, { foreignKey: "user_id"});
+    User.hasMany(models.Todo, { foreignKey: "userId" });
   };
 
   return User;

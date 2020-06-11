@@ -37,6 +37,7 @@ const addUser = (req, res) => {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     email: req.body.email,
+    age:req.body.age
   })
     .then((data) => {
       res.send(data);

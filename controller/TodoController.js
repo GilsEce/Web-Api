@@ -8,7 +8,7 @@ let result = {
 };
 
 let errorReq = {
-  init: function(){
+  init: function () {
     this.errors = [];
   },
   status: "Failed",
@@ -21,10 +21,11 @@ const getAllTodos = (req, res) => {
     include: {
       model: db.User,
       attributes: {
-        exclude: ["email"],  //-> this function is for hidding some attributes in return maybe such as password 
+        //exclude: ["email"],  //-> this function is for hidding some attributes in return maybe such as password
       },
     },
   }).then((todos) => {
+    console.log(todos);
     result.data = todos;
     res.json(result);
   });
@@ -49,18 +50,19 @@ const findTodo = (req, res) => {
 
 const addTodo = (req, res) => {
   errorReq.init();
-  let user_id = req.body.user_id;
+
+  let userId = req.body.userId;
   const getUserId = () => {
-    if (user_id === "" || typeof user_id == "undefined" || user_id <= 0) {
+    if (userId === "" || typeof userId == "undefined" || userId <= 0) {
       return null;
     } else {
-      return user_id;
+      return userId;
     }
   };
 
   db.Todo.create({
     text: req.body.text,
-    user_id: getUserId(),
+    userId: getUserId()
   })
     .then((submittedTodo) => {
       result.data = submittedTodo;
@@ -77,9 +79,20 @@ const addTodo = (req, res) => {
 
 const updateTodo = (req, res) => {
   errorReq.init();
+
+  let userId = req.body.userId;
+  const getUserId = () => {
+    if (userId === "" || typeof userId == "undefined" || userId <= 0) {
+      return null;
+    } else {
+      return userId;
+    }
+  };
+
   db.Todo.update(
     {
       text: req.body.text,
+      userId: getUserId()
     },
     {
       where: {
