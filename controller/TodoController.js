@@ -16,6 +16,23 @@ let errorReq = {
   errors: [],
 };
 
+//id must be in integer
+const idValidation = (id) => {
+  let parseId = parseInt(id);
+
+  if (
+    typeof id === "undefined" ||
+    id === "" ||
+    id <= 0 ||
+    isNaN(parseId) ||
+    typeof id === "string"
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 const getAllTodos = (req, res) => {
   db.Todo.findAll({
     include: {
@@ -25,7 +42,6 @@ const getAllTodos = (req, res) => {
       },
     },
   }).then((todos) => {
-    console.log(todos);
     result.data = todos;
     res.json(result);
   });
@@ -62,7 +78,7 @@ const addTodo = (req, res) => {
 
   db.Todo.create({
     text: req.body.text,
-    userId: getUserId()
+    userId: getUserId(),
   })
     .then((submittedTodo) => {
       result.data = submittedTodo;
@@ -92,7 +108,7 @@ const updateTodo = (req, res) => {
   db.Todo.update(
     {
       text: req.body.text,
-      userId: getUserId()
+      userId: getUserId(),
     },
     {
       where: {
@@ -137,9 +153,7 @@ const deleteTodo = (req, res) => {
 
 const deleteAllTodos = (req, res) => {
   errorReq.init();
-
   let confirmPass = "AFCT-1H1-2HH-12-DFGQ"; //static password, but you can create a dynamic pass that store in db
-
   if (req.query.pass === confirmPass) {
     db.Todo.destroy({
       where: {},
@@ -160,6 +174,68 @@ const deleteAllTodos = (req, res) => {
   }
 };
 
+const doneTodo = (req, res) => {
+  errorReq.init();
+  let id = req.body.id;
+  if (!idValidation(id)) {
+    console.log(`id is undefined`);
+    errorReq.errors.push({ message: "Invalid id type must be in integer" });
+    res.json(errorReq);
+  } else {
+    db.Todo.update(
+      {
+        isDone: 1,
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    )
+      .then((data) => {
+        if (data[0] === 1) {
+          res.json("Success");
+        } else {
+          res.json("Failed");
+        }
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  }
+};
+
+const assignTodo = (req, res) => {
+  errorReq.init();
+  let userId = req.body.userId;
+
+  if (!idValidation(userId)) {
+    errorReq.errors.push({ message: "Invalid id type must be in integer" });
+    res.send(errorReq);
+  } else {
+    db.Todo.update(
+      {
+        userId: userId,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    )
+      .then((data) => {
+        if (data[0] === 1) {
+          res.json("Success");
+        } else {
+          res.json("Failed");
+        }
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  }
+};
+
 module.exports = {
   getAllTodos,
   findTodo,
@@ -167,4 +243,6 @@ module.exports = {
   updateTodo,
   deleteTodo,
   deleteAllTodos,
+  doneTodo,
+  assignTodo,
 };
