@@ -19,6 +19,7 @@ router.get("/users", UserController.getAllUSers);
 
 
 router.get("/sample", UserController.getAllUSers);
+router.get("/sample-1", UserController.getAllUSers);
 
 
 module.exports = router;
