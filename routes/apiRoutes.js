@@ -18,4 +18,7 @@ router.post("/user/new",UserController.addUser);
 router.get("/users", UserController.getAllUSers);
 
 
+router.get("/sample", UserController.getAllUSers);
+
+
 module.exports = router;
